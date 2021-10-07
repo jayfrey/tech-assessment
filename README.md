@@ -9,10 +9,6 @@
 #### Other dependecies
 * [joi](https://github.com/sideway/joi)
 
-### Requirements
-- [x] Entering text in the 'add project' input and hitting enter will add it as an item to the 'todo' list.
-- [x] Three columns for 'Todo', 'In Progress', and 'Done' projects.
-
 ### API List
 ```sh
 GET api/employee/<name>

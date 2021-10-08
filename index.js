@@ -8,12 +8,14 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-let db = new sqlite3.Database('./db/assessment.sqlite', (err) => {
-    if (err) {
-      console.error(err.message);
-    }
-    console.log('Connected to the sqlite database.');
-});
+function openDB(){
+    return new sqlite3.Database('./db/assessment.sqlite', (err) => {
+        if (err) {
+          console.error(err.message);
+        }
+        console.log('Connected to the sqlite database.');
+    });
+}
 
 const schema = Joi.object({
     name: Joi.string()
@@ -42,6 +44,7 @@ app.get('/api/employee/:name', (req, res) => {
     if (error) {
         res.status(500).send({"message" : error.details[0].message});
     } else {
+        let db = openDB();
         var data = [
             req.params.name,
         ];
@@ -64,11 +67,14 @@ app.get('/api/employee/:name', (req, res) => {
                 });
             }
         });
+        db.close();
     }
 });
 
 app.put('/api/employee', (req, res) => {
 
+    let db = openDB();
+    
     var data = [
         req.body.name,
     ];
@@ -96,6 +102,8 @@ app.put('/api/employee', (req, res) => {
             });
         }
     });
+
+    db.close();
 });
 
 function computeTaxPayable(employee){
@@ -152,7 +160,7 @@ function computeTaxPayable(employee){
             tax = 83650;
             break;
         default:
-            console.log("empty");
+            console.log("Out of range");
             break;
     }
 
